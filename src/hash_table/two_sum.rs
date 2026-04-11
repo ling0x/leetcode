@@ -43,12 +43,19 @@ pub fn two_sum_3(nums: Vec<i32>, target: i32) -> Vec<i32> {
         let idx = nums
             .iter()
             .enumerate()
-            .rposition(|(i2, y)| i2 != i && *y == target - x);
+            .position(|(i2, y)| i2 != i && *y == target - x);
         if let Some(idx) = idx {
             return Vec::from([i as i32, idx as i32]);
         }
     }
     Vec::new()
+}
+
+pub fn two_sums_3(nums: Vec<i32>, target: i32) -> Vec<i32> {
+    let mut seen = Vec::<String>::new();
+
+    for (i, x) in nums.iter().enumerate() {}
+    todo!()
 }
 
 #[cfg(test)]
