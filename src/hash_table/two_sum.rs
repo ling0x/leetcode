@@ -23,17 +23,18 @@ pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
 #[cfg(test)]
 mod tests {
     use crate::hash_table::two_sum::two_sum;
+    use crate::test_utils::benchmark::run_with_metrics;
 
     #[test]
     fn two_sum_test_1() {
-        two_sum(vec![2, 7, 11, 15], 9);
+        let _ = run_with_metrics("two_sum_test_1", || two_sum(vec![2, 7, 11, 15], 9));
     }
     #[test]
     fn two_sum_test_2() {
-        two_sum(vec![3, 2, 3], 6);
+        let _ = run_with_metrics("two_sum_test_2", || two_sum(vec![3, 2, 3], 6));
     }
     #[test]
     fn two_sum_test_3() {
-        two_sum(vec![3, 2, 4], 6);
+        let _ = run_with_metrics("two_sum_test_3", || two_sum(vec![3, 2, 4], 6));
     }
 }
