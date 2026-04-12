@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use tracing::info;
 
 // First try - brute force approach without optimization
@@ -122,7 +124,12 @@ pub fn two_sum_7(nums: Vec<i32>, target: i32) -> Vec<i32> {
 }
 
 // 1ms 3.11MB
-// re-run: 0ms 3.02MB
+// Sometimes: 0ms 3.02MB
+//
+// This solution thinks in terms of pairs: build a complete map of everything,
+// then search for matching pairs. This is natural but leads to complexity —
+// you have to handle edge cases like duplicate values, and you process the
+// whole array before finding anything.
 pub fn two_sum_8(nums: Vec<i32>, target: i32) -> Vec<i32> {
     if nums.len() == 2 {
         return [0, 1].to_vec();
@@ -152,10 +159,42 @@ pub fn two_sum_8(nums: Vec<i32>, target: i32) -> Vec<i32> {
     result
 }
 
+// Best solution
+// 0ms 2.56MB
+//
+// Whenever you build a map over a whole collection before querying it,
+// ask yourself: "Could I merge the build and query into one pass?"
+//
+// The optimal solution asks a different question at each step:
+// "Have I already seen the number I need?"
+//
+// Think of it this way: you're walking through the array left to right.
+// At any position i, the map contains only the elements you've already passed.
+// You're not comparing against the whole array — you're asking: "among everything
+// I've seen so far, does my complement exist?"
+pub fn two_sum_9(nums: Vec<i32>, target: i32) -> Vec<i32> {
+    let mut seen = std::collections::HashMap::<i32, usize>::new();
+
+    for (i, x) in nums.iter().enumerate() {
+        let result = target - x;
+
+        let y = seen.get(&result);
+
+        if let Some(y) = y {
+            return vec![*y as i32, i as i32];
+        }
+
+        seen.insert(*x, i);
+    }
+
+    Vec::new()
+}
+
 #[cfg(test)]
 mod tests {
     use crate::hash_table::two_sum::{
         two_sum_1, two_sum_2, two_sum_3, two_sum_4, two_sum_5, two_sum_6, two_sum_7, two_sum_8,
+        two_sum_9,
     };
     use crate::test_utils::benchmark::{init_benchmark_tracing, run_and_assert_vec_any_order};
 
@@ -254,8 +293,14 @@ mod tests {
     }
 
     #[test]
-    // #[ignore]
+    #[ignore]
     fn two_sum_8_cases() {
         run_solver_cases("two_sum_8", two_sum_8, full_cases());
+    }
+
+    #[test]
+    // #[ignore]
+    fn two_sum_9_cases() {
+        run_solver_cases("two_sum_9", two_sum_9, full_cases());
     }
 }
