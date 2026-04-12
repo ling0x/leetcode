@@ -1,4 +1,5 @@
 use std::alloc::{GlobalAlloc, Layout, System};
+use std::fmt::Debug;
 use std::sync::Once;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::{Duration, Instant};
@@ -96,4 +97,23 @@ where
     );
 
     (output, result)
+}
+
+pub fn assert_vec_any_order<T>(mut actual: Vec<T>, mut expected: Vec<T>)
+where
+    T: Ord + Debug,
+{
+    actual.sort_unstable();
+    expected.sort_unstable();
+    assert_eq!(actual, expected);
+}
+
+pub fn run_and_assert_vec_any_order<T, F>(label: &str, expected: Vec<T>, test: F) -> BenchmarkResult
+where
+    T: Ord + Debug,
+    F: FnOnce() -> Vec<T>,
+{
+    let (actual, metrics) = run_with_metrics(label, test);
+    assert_vec_any_order(actual, expected);
+    metrics
 }

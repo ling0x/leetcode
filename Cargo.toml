@@ -5,6 +5,6 @@ edition = "2024"
 
 [dependencies]
 tracing = "*"
+tracing-subscriber = "*"
 
 [dev-dependencies]
-tracing-subscriber = "*"
