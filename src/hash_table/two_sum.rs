@@ -1,7 +1,8 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use tracing::info;
 
+// First try - brute force approach without optimization
 // 101ms, 2.37MB
 pub fn two_sum_1(nums: Vec<i32>, target: i32) -> Vec<i32> {
     let mut result = std::collections::HashSet::<i32>::new();
@@ -66,13 +67,55 @@ pub fn two_sum_4(nums: Vec<i32>, target: i32) -> Vec<i32> {
     Vec::new()
 }
 
+// Can we change our array somehow so the search become faster?
+// 3ms 2.29MB
 pub fn two_sum_5(nums: Vec<i32>, target: i32) -> Vec<i32> {
-    todo!()
+    let mut arr = nums.clone();
+    for _ in nums.iter() {
+        let last = arr.pop();
+        if let Some(last) = last {
+            let result = target - last;
+            let i1 = nums.iter().rposition(|x| x == &last);
+            let i2 = arr.iter().position(|y| y == &result);
+            if let (Some(i1), Some(i2)) = (i1, i2) {
+                return vec![i2 as i32, i1 as i32];
+            }
+        }
+    }
+    Vec::new()
+}
+
+// Without changing the array, can use additional space to speed up the search?
+// 65ms 2.54MB
+pub fn two_sum_6(nums: Vec<i32>, target: i32) -> Vec<i32> {
+    let mut map: HashMap<_, _> = nums.iter().enumerate().collect();
+    for (i1, x) in nums.iter().enumerate() {
+        map.remove(&i1);
+        let result = target - x;
+        if let Some((i2, _)) = &map.iter().find(|(_, v)| ***v == result) {
+            return vec![i1 as i32, **i2 as i32];
+        }
+    }
+    Vec::new()
+}
+
+pub fn two_sum_7(nums: Vec<i32>, target: i32) -> Vec<i32> {
+    let mut map: HashMap<_, _> = nums.iter().enumerate().collect();
+    for (i1, x) in nums.iter().enumerate() {
+        map.remove(&i1);
+        let result = target - x;
+        if let Some((i2, _)) = &map.iter().find(|(_, v)| ***v == result) {
+            return vec![i1 as i32, **i2 as i32];
+        }
+    }
+    Vec::new()
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::hash_table::two_sum::{two_sum_1, two_sum_2, two_sum_3, two_sum_4, two_sum_5};
+    use crate::hash_table::two_sum::{
+        two_sum_1, two_sum_2, two_sum_3, two_sum_4, two_sum_5, two_sum_6,
+    };
     use crate::test_utils::benchmark::{init_benchmark_tracing, run_and_assert_vec_any_order};
 
     #[derive(Clone)]
@@ -152,8 +195,14 @@ mod tests {
     }
 
     #[test]
-    // #[ignore]
+    #[ignore]
     fn two_sum_5_cases() {
         run_solver_cases("two_sum_5", two_sum_5, full_cases());
+    }
+
+    #[test]
+    // #[ignore]
+    fn two_sum_6_cases() {
+        run_solver_cases("two_sum_6", two_sum_6, full_cases());
     }
 }
