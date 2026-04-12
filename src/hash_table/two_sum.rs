@@ -1,7 +1,3 @@
-use std::collections::HashMap;
-
-use tracing::info;
-
 // First try - brute force approach without optimization
 // 101ms, 2.37MB
 pub fn two_sum_1(nums: Vec<i32>, target: i32) -> Vec<i32> {
@@ -159,7 +155,6 @@ pub fn two_sum_8(nums: Vec<i32>, target: i32) -> Vec<i32> {
     result
 }
 
-// Best solution
 // 0ms 2.56MB
 //
 // Whenever you build a map over a whole collection before querying it,
