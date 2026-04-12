@@ -97,31 +97,65 @@ pub fn two_sum_6(nums: Vec<i32>, target: i32) -> Vec<i32> {
     Vec::new()
 }
 
+// 3ms 3.2MB
 pub fn two_sum_7(nums: Vec<i32>, target: i32) -> Vec<i32> {
-    let map: std::collections::HashMap<_, _> = nums.iter().enumerate().collect();
-    let reverse_map: std::collections::HashMap<_, _> =
-        nums.iter().enumerate().map(|(k, v)| (v, k)).collect();
+    let map = nums.iter().enumerate().fold(
+        std::collections::HashMap::<i32, Vec<i32>>::new(),
+        |mut map, (idx, &val)| {
+            map.entry(val).or_default().push(idx as i32);
+            map
+        },
+    );
 
-    for (i1, x) in map.iter() {
-        info!("{map:?}");
-        let result = target - *x;
-        if let Some(i2) = reverse_map.get(&result) {
-            info!(
-                "{} - {:?}(idx: {}) = {}(idx: {})",
-                target, x, i1, result, i2,
-            );
-            let res = vec![*i1 as i32, *i2 as i32];
-            info!("{res:?}");
-            return res;
+    let mut answer = std::collections::HashSet::<i32>::new();
+
+    for (i, x) in map.iter() {
+        let result = target - i;
+        if result == *i && x.len().eq(&1) {
+            continue;
+        };
+        let index = map.get(&result);
+        if let Some(index) = index {
+            answer.extend(index);
         }
     }
-    Vec::new()
+    answer.into_iter().collect()
+}
+
+// 1ms 3.11MB
+pub fn two_sum_8(nums: Vec<i32>, target: i32) -> Vec<i32> {
+    if nums.len() == 2 {
+        return [0, 1].to_vec();
+    }
+
+    let map = nums.iter().enumerate().fold(
+        std::collections::HashMap::<i32, Vec<i32>>::new(),
+        |mut map, (idx, &val)| {
+            map.entry(val).or_default().push(idx as i32);
+            map
+        },
+    );
+
+    let result: Vec<i32> = map
+        .iter()
+        .filter_map(|(value, keys)| {
+            let complement = target - value;
+            // Skip the case where the value pairs with itself but only has one index
+            if complement == *value && keys.len() == 1 {
+                return None;
+            }
+            map.get(&complement)
+        })
+        .flat_map(|indices| indices.iter().copied())
+        .collect();
+
+    result
 }
 
 #[cfg(test)]
 mod tests {
     use crate::hash_table::two_sum::{
-        two_sum_1, two_sum_2, two_sum_3, two_sum_4, two_sum_5, two_sum_6, two_sum_7,
+        two_sum_1, two_sum_2, two_sum_3, two_sum_4, two_sum_5, two_sum_6, two_sum_7, two_sum_8,
     };
     use crate::test_utils::benchmark::{init_benchmark_tracing, run_and_assert_vec_any_order};
 
@@ -214,8 +248,14 @@ mod tests {
     }
 
     #[test]
-    // #[ignore]
+    #[ignore]
     fn two_sum_7_cases() {
         run_solver_cases("two_sum_7", two_sum_7, full_cases());
+    }
+
+    #[test]
+    // #[ignore]
+    fn two_sum_8_cases() {
+        run_solver_cases("two_sum_8", two_sum_8, full_cases());
     }
 }
