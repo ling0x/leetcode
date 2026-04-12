@@ -1,5 +1,3 @@
-use std::collections::{HashMap, HashSet};
-
 use tracing::info;
 
 // First try - brute force approach without optimization
@@ -88,7 +86,7 @@ pub fn two_sum_5(nums: Vec<i32>, target: i32) -> Vec<i32> {
 // Without changing the array, can use additional space to speed up the search?
 // 65ms 2.54MB
 pub fn two_sum_6(nums: Vec<i32>, target: i32) -> Vec<i32> {
-    let mut map: HashMap<_, _> = nums.iter().enumerate().collect();
+    let mut map: std::collections::HashMap<_, _> = nums.iter().enumerate().collect();
     for (i1, x) in nums.iter().enumerate() {
         map.remove(&i1);
         let result = target - x;
@@ -100,13 +98,21 @@ pub fn two_sum_6(nums: Vec<i32>, target: i32) -> Vec<i32> {
 }
 
 pub fn two_sum_7(nums: Vec<i32>, target: i32) -> Vec<i32> {
-    let mut map: HashMap<_, _> = nums.iter().enumerate().collect();
-    for (i1, x) in nums.iter().enumerate() {
-        map.remove(&i1);
-        let result = target - x;
-        let position = map.iter().position(|(_, v)| v == &&result);
-        if let Some(i2) = position {
-            return vec![i1 as i32, i2 as i32];
+    let map: std::collections::HashMap<_, _> = nums.iter().enumerate().collect();
+    let reverse_map: std::collections::HashMap<_, _> =
+        nums.iter().enumerate().map(|(k, v)| (v, k)).collect();
+
+    for (i1, x) in map.iter() {
+        info!("{map:?}");
+        let result = target - *x;
+        if let Some(i2) = reverse_map.get(&result) {
+            info!(
+                "{} - {:?}(idx: {}) = {}(idx: {})",
+                target, x, i1, result, i2,
+            );
+            let res = vec![*i1 as i32, *i2 as i32];
+            info!("{res:?}");
+            return res;
         }
     }
     Vec::new()
@@ -115,7 +121,7 @@ pub fn two_sum_7(nums: Vec<i32>, target: i32) -> Vec<i32> {
 #[cfg(test)]
 mod tests {
     use crate::hash_table::two_sum::{
-        two_sum_1, two_sum_2, two_sum_3, two_sum_4, two_sum_5, two_sum_6,
+        two_sum_1, two_sum_2, two_sum_3, two_sum_4, two_sum_5, two_sum_6, two_sum_7,
     };
     use crate::test_utils::benchmark::{init_benchmark_tracing, run_and_assert_vec_any_order};
 
@@ -202,8 +208,14 @@ mod tests {
     }
 
     #[test]
-    // #[ignore]
+    #[ignore]
     fn two_sum_6_cases() {
         run_solver_cases("two_sum_6", two_sum_6, full_cases());
+    }
+
+    #[test]
+    // #[ignore]
+    fn two_sum_7_cases() {
+        run_solver_cases("two_sum_7", two_sum_7, full_cases());
     }
 }
