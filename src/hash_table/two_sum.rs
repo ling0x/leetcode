@@ -72,7 +72,7 @@ pub fn two_sum_5(nums: Vec<i32>, target: i32) -> Vec<i32> {
 
 #[cfg(test)]
 mod tests {
-    use crate::hash_table::two_sum::{two_sum_1, two_sum_2, two_sum_3, two_sum_4};
+    use crate::hash_table::two_sum::{two_sum_1, two_sum_2, two_sum_3, two_sum_4, two_sum_5};
     use crate::test_utils::benchmark::{init_benchmark_tracing, run_and_assert_vec_any_order};
 
     #[derive(Clone)]
