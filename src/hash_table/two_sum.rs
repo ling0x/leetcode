@@ -39,8 +39,7 @@ pub fn two_sum_2(nums: Vec<i32>, target: i32) -> Vec<i32> {
 }
 
 // 86ms, 2.28MB
-// if I replace rposition with position it becomes 56ms, which means that
-// position is faster than rposition
+// is position is faster than rposition?
 pub fn two_sum_3(nums: Vec<i32>, target: i32) -> Vec<i32> {
     for (i, x) in nums.iter().enumerate() {
         let idx = nums
@@ -123,6 +122,7 @@ pub fn two_sum_7(nums: Vec<i32>, target: i32) -> Vec<i32> {
 }
 
 // 1ms 3.11MB
+// re-run: 0ms 3.02MB
 pub fn two_sum_8(nums: Vec<i32>, target: i32) -> Vec<i32> {
     if nums.len() == 2 {
         return [0, 1].to_vec();
