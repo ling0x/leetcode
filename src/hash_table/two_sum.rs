@@ -104,8 +104,9 @@ pub fn two_sum_7(nums: Vec<i32>, target: i32) -> Vec<i32> {
     for (i1, x) in nums.iter().enumerate() {
         map.remove(&i1);
         let result = target - x;
-        if let Some((i2, _)) = &map.iter().find(|(_, v)| ***v == result) {
-            return vec![i1 as i32, **i2 as i32];
+        let position = map.iter().position(|(_, v)| v == &&result);
+        if let Some(i2) = position {
+            return vec![i1 as i32, i2 as i32];
         }
     }
     Vec::new()
