@@ -1,4 +1,6 @@
-pub fn longest_common_prefix(strs: Vec<String>) -> String {
+use tracing::info;
+
+pub fn longest_common_prefix_1(strs: Vec<String>) -> String {
     let mut seen = std::collections::HashSet::<char>::new();
     let mut seen_seen = std::collections::HashSet::<char>::new();
     let mut common = Vec::<char>::new();
@@ -21,14 +23,52 @@ pub fn longest_common_prefix(strs: Vec<String>) -> String {
         }
     }
 
+    info!("{common_common:?}");
+
     String::from_iter(common_common)
 }
 
 #[cfg(test)]
 mod tests {
+    use tracing::info;
+
+    use crate::{
+        array::longest_common_prefix::longest_common_prefix_1,
+        test_utils::benchmark::init_benchmark_tracing,
+    };
+
+    struct Case {
+        input: Vec<String>,
+        output: String,
+    }
+
+    fn full_cases() -> Vec<Case> {
+        vec![
+            Case {
+                input: vec![
+                    "flower".to_string(),
+                    "flow".to_string(),
+                    "flight".to_string(),
+                ],
+                output: "fl".to_string(),
+            },
+            Case {
+                input: vec!["dog".to_string(), "racecar".to_string(), "car".to_string()],
+                output: String::new(),
+            },
+        ]
+    }
+
+    fn run_solver_cases(solver_name: &str, solver: fn(Vec<String>) -> String, cases: Vec<Case>) {
+        init_benchmark_tracing();
+        info!("{solver_name}");
+        for case in cases {
+            assert_eq!(solver(case.input), case.output);
+        }
+    }
 
     #[test]
     fn longest_common_prefix_1_cases() {
-        assert!(true)
+        run_solver_cases("solver 1", longest_common_prefix_1, full_cases());
     }
 }

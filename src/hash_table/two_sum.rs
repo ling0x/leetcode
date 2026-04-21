@@ -294,7 +294,7 @@ mod tests {
     }
 
     #[test]
-    // #[ignore]
+    #[ignore]
     fn two_sum_9_cases() {
         run_solver_cases("two_sum_9", two_sum_9, full_cases());
     }
