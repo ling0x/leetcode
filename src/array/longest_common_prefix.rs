@@ -1,10 +1,6 @@
-use std::collections::HashSet;
-
-use tracing::info;
-
 pub fn longest_common_prefix(strs: Vec<String>) -> String {
-    let mut seen = HashSet::<char>::new();
-    let mut seen_seen = HashSet::<char>::new();
+    let mut seen = std::collections::HashSet::<char>::new();
+    let mut seen_seen = std::collections::HashSet::<char>::new();
     let mut common = Vec::<char>::new();
     let mut common_common = Vec::<char>::new();
 
@@ -25,13 +21,7 @@ pub fn longest_common_prefix(strs: Vec<String>) -> String {
         }
     }
 
-    info!("Seen: {:?}", seen);
-    info!("Common: {:?}", common);
-    info!("Seen seen: {:?}", seen_seen);
-    info!("Common common: {:?}", common_common);
-
-    let result = String::from_iter(common_common);
-    result
+    String::from_iter(common_common)
 }
 
 #[cfg(test)]
